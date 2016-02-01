@@ -1,4 +1,4 @@
-*modsearch.txt*	TODO
+*modsearch.txt*	Modify the last search in various predefined ways
 
 ==============================================================================
 CONTENTS                                        *modsearch*   *modsearch-contents*
@@ -27,7 +27,7 @@ The command is (provided you're in ~/.vim):
 <
 
 Another way is to simply copy all the essential directories inside the ~/.vim
-directory: TODO list of directories
+directory: autoload, doc, plugin.
 
 
 ==============================================================================

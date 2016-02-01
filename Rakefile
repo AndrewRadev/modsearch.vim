@@ -4,6 +4,5 @@ end
 
 desc "Prepare archive for deployment"
 task :archive do
-  puts "TODO"
-  # sh 'zip -r ~/newplugin.zip doc/newplugin.txt'
+  sh 'zip -r ~/modsearch.zip doc/modsearch.txt autoload/ plugin/'
 end

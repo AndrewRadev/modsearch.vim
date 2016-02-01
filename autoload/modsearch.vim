@@ -4,9 +4,9 @@ function! modsearch#Main(...)
 
   for mod in a:000
     if mod == "ignore-syntax-comment"
-      let modified_search = s:ModsearchIgnoreSyntax(modified_search, 'Comment')
+      let modified_search = s:IgnoreSyntax(modified_search, 'Comment')
     elseif mod == "ignore-syntax-string"
-      let modified_search = s:ModsearchIgnoreSyntax(modified_search, 'String')
+      let modified_search = s:IgnoreSyntax(modified_search, 'String')
     elseif mod == "word"
       let modified_search = '\<'.modified_search.'\>'
     elseif mod == "unword"
@@ -32,7 +32,7 @@ function! modsearch#Complete(_a, _c, _p)
   return join(sort(commands), "\n")
 endfunction
 
-function! s:ModsearchIgnoreSyntax(pattern, syntax_group_fragment)
+function! s:IgnoreSyntax(pattern, syntax_group_fragment)
   let saved_view = winsaveview()
 
   let skip_pattern = '\%('.a:syntax_group_fragment.'\)'
