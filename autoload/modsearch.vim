@@ -1,54 +1,39 @@
 function! modsearch#Main(...)
-  let last_search = histget('search', -1)
+  let last_search = @/
   let modified_search = last_search
 
   for mod in a:000
-    if mod == "ignore-syntax-comment"
-      let modified_search = s:IgnoreSyntax(modified_search, 'Comment')
-    elseif mod == "ignore-syntax-string"
-      let modified_search = s:IgnoreSyntax(modified_search, 'String')
-    elseif mod == "word"
-      let modified_search = '\<'.modified_search.'\>'
-    elseif mod == "unword"
-      let modified_search = substitute(modified_search, '^\\<', '', '')
-      let modified_search = substitute(modified_search, '\\>$', '', '')
-    else
-      echomsg "Unknown modification: ".mod
-      continue
-    endif
+    let modified_search = s:ApplyMod(modified_search, mod)
   endfor
 
   let @/ = modified_search
 endfunction
 
 function! modsearch#Complete(_a, _c, _p)
-  let commands = [
-        \ "ignore-syntax-comment",
-        \ "ignore-syntax-string",
-        \ "word",
-        \ "unword",
-        \ ]
-
-  return join(sort(commands), "\n")
+  return join(sort(keys(g:modsearch_mods)), "\n")
 endfunction
 
-function! s:IgnoreSyntax(pattern, syntax_group_fragment)
-  let saved_view = winsaveview()
+function! s:ApplyMod(pattern, mod)
+  let pattern = a:pattern
+  let mod     = a:mod
 
-  let skip_pattern = '\%('.a:syntax_group_fragment.'\)'
-  let ignore_pattern = ''
+  if !has_key(g:modsearch_mods, mod)
+    echomsg "Unknown modification: ".mod
+    return pattern
+  endif
 
-  " Iterate over all search results in file
-  normal! G$
-  let search_flags = "w"
-  while search(a:pattern, search_flags) > 0
-    let search_flags = "W"
-    if synIDattr(synID(line('.'), col('.'), 1), 'name') =~ skip_pattern
-      let ignore_pattern .= '\%(\%'.line('.').'l\%'.col('.').'c\)\@!'
-    endif
-  endwhile
+  let [type; mod_definition] = g:modsearch_mods[mod]
+  if type == 'alias'
+    let real_mod = mod_definition[0]
+    return s:ApplyMod(pattern, real_mod)
+  endif
 
-  call winrestview(saved_view)
-
-  return ignore_pattern.a:pattern
+  if type == 'function'
+    let name = mod_definition[0]
+    let args = extend([pattern], mod_definition[1:])
+    return call(name, args)
+  else
+    echomsg "Unknown modification type (".type.") for mod: ".mod
+    return pattern
+  endif
 endfunction
