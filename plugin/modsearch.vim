@@ -6,6 +6,10 @@ let g:loaded_modsearch = '0.0.1' " version number
 let s:keepcpo = &cpo
 set cpo&vim
 
+if !exists('g:modsearch_custom_mods')
+  let g:modsearch_custom_mods = {}
+endif
+
 let g:modsearch_mods = {
       \ 'word':                  ['function', 'modsearch#mods#WrapWord'],
       \ 'unword':                ['function', 'modsearch#mods#UnwrapWord'],

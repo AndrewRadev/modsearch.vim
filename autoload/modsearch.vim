@@ -2,30 +2,39 @@ function! modsearch#Main(...)
   let last_search = @/
   let modified_search = last_search
 
+  let mod_index = {}
+  call extend(mod_index, g:modsearch_mods)
+  call extend(mod_index, g:modsearch_custom_mods)
+
   for mod in a:000
-    let modified_search = s:ApplyMod(modified_search, mod)
+    let modified_search = s:ApplyMod(modified_search, mod, mod_index)
   endfor
 
   let @/ = modified_search
 endfunction
 
 function! modsearch#Complete(_a, _c, _p)
-  return join(sort(keys(g:modsearch_mods)), "\n")
+  let mod_index = {}
+  call extend(mod_index, g:modsearch_mods)
+  call extend(mod_index, g:modsearch_custom_mods)
+
+  return join(sort(keys(mod_index)), "\n")
 endfunction
 
-function! s:ApplyMod(pattern, mod)
-  let pattern = a:pattern
-  let mod     = a:mod
+function! s:ApplyMod(pattern, mod, mod_index)
+  let pattern   = a:pattern
+  let mod       = a:mod
+  let mod_index = a:mod_index
 
-  if !has_key(g:modsearch_mods, mod)
+  if !has_key(mod_index, mod)
     echomsg "Unknown modification: ".mod
     return pattern
   endif
 
-  let [type; mod_definition] = g:modsearch_mods[mod]
+  let [type; mod_definition] = mod_index[mod]
   if type == 'alias'
     let real_mod = mod_definition[0]
-    return s:ApplyMod(pattern, real_mod)
+    return s:ApplyMod(pattern, real_mod, mod_index)
   endif
 
   if type == 'function'
