@@ -57,7 +57,36 @@ implemented by specifically excluding particular line/column pairs.
 ==============================================================================
 SETTINGS                                                    *modsearch-settings*
 
-TODO
+                                                       *g:modsearch_custom_mods*
+>
+    let g:modsearch_custom_mods = {'foo': ['alias', 'word']}
+<
+
+Default value: {}
+
+This variable allows you to define your own mods and shortcuts. It's a
+|Dictionary|, whose keys are the available subcommands ("mods"), and the
+values are their descriptions. You can take a look at the plugin's source code
+to see how the variable `g:modsearch_mods` is defined, but a sample from it
+looks like this:
+>
+    let g:modsearch_mods = {
+          \ 'ignore-syntax-comment': ['function', 'modsearch#mods#IgnoreSyntax', 'Comment'],
+          \ 'isc':                   ['alias',    'ignore-syntax-comment'],
+          \ }
+<
+The first value in the list describes the type of mod. If it's "function", the
+next item is the name of the function, and the rest are values to send it as
+arguments, along with the search pattern to modify. For this example, the
+above function would be written like:
+>
+    function! modsearch#mods#IgnoreSyntax(pattern, syntax_group_fragment)
+      " ...
+    endfunction
+<
+For the "alias" type, there is only one other value -- which other mod is this
+an alias to.
+
 
 ==============================================================================
 ISSUES                                                        *modsearch-issues*
