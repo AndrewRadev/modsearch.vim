@@ -22,4 +22,4 @@ For the modifiers that ignore comments and strings, bear in mind that the patter
 
 ## Contributing
 
-Pull requests are welcome, but take a look at [CONTRIBUTING.md](https://github.com/AndrewRadev/modsearch.vim/blob/master/CONTRIBUTING.md) first for some guidelines.
+Pull requests are welcome, as long as they **did not involve any LLM usage**. Take a look at [CONTRIBUTING.md](https://github.com/AndrewRadev/modsearch.vim/blob/master/CONTRIBUTING.md) first for some guidelines.
